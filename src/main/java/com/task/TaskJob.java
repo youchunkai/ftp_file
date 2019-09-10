@@ -23,11 +23,5 @@ public class TaskJob {
         fileService.backupAirXml();
     }
 
-//    @Scheduled(cron = "0 2/20 * * * ?")
-    public void backupWaterXml(){
-        fileService.backupWaterXml();
-    }
-
-
 
 }

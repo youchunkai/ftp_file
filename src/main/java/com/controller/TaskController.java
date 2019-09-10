@@ -27,8 +27,8 @@ public class TaskController {
         fileService.backupAirXml();
     }
 
-    @GetMapping(value = "backupWaterXml")
-    public void backupWaterXml(){
-        fileService.backupWaterXml();
+    @GetMapping(value = "backupTestXml")
+    public void backupTestXml(){
+        fileService.backupTestXml();
     }
 }

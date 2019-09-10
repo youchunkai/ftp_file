@@ -37,4 +37,11 @@ public class FileMoveUtil {
         file.delete();
     }
 
+    /**
+     * @desc 删除文件
+     * @Param: file:被剪切的文件
+     */
+    public static void deleteFile(File file) {
+        file.delete();
+    }
 }
