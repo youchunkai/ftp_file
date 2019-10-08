@@ -21,9 +21,15 @@ public class FileMoveUtil {
 
     /**
      * @desc 剪切文件
-     * @Param: file:被剪切的文件 backupFileName：剪切后的文件全路径名
+     * @Param: file:被剪切的文件 path：剪切后的文件夹路径
     */
     public static void cutFile(File file, String path) throws IOException {
+
+//        File fileDir = new File(path);
+//        if(!fileDir.exists()){
+//            fileDir.mkdirs();
+//        }
+
         FileInputStream fis = new FileInputStream(file);
         FileOutputStream fos = new FileOutputStream(path+"/"+file.getName());
         byte[] buff = new byte[1024];
@@ -39,7 +45,7 @@ public class FileMoveUtil {
 
     /**
      * @desc 删除文件
-     * @Param: file:被剪切的文件
+     * @Param: file:被删除的文件
      */
     public static void deleteFile(File file) {
         file.delete();

@@ -107,17 +107,20 @@ public class FtpUtils {
     public static void main(String[] args) throws IOException {
 
         FTPClient client = new FTPClient();
+//        String hostname = "10.16.146.121";
+//        int port = 8161;
+
         String hostname = "117.39.29.99";
-        int port = 6021;
+        int port = 6162;
         String airUserName = "test";
-        String airPWD = "test123";
+        String airPWD = "ftp123!@#";
         client.connect(hostname, port);
         client.login(airUserName, airPWD);
 
         client.setFileType(FTPClient.BINARY_FILE_TYPE);
         client.enterLocalPassiveMode();
 
-        String fileName = "test.xml";
+        String fileName = "test1.xml";
         String filePath = "D:/1.xml";
         FileInputStream fis = new FileInputStream(new File(filePath));
 

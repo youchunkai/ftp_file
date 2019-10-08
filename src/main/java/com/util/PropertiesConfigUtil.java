@@ -1,5 +1,6 @@
 package com.util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -12,8 +13,13 @@ public class PropertiesConfigUtil {
 	 */
 	public static String getConfigByKey(String key){
 		ResourceBundle rs = getResourceBundle();// 获取本地化配置
-		String result=rs.getString(key);
-		return result;
+
+		try {
+			return new String(rs.getString(key).getBytes("iso8859-1"), "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -26,11 +32,9 @@ public class PropertiesConfigUtil {
 	}
 	
 	public static void main(String[] args){
-		String originalAir = PropertiesConfigUtil.getConfigByKey("originalAir");
-		String originalWater = PropertiesConfigUtil.getConfigByKey("originalWater");
-		String analyseAir = PropertiesConfigUtil.getConfigByKey("analyseAir");
-		String analyseWater = PropertiesConfigUtil.getConfigByKey("analyseWater");
-		System.out.println(originalAir + "   " +analyseAir+ "   "+originalWater+ "   "+analyseWater);
+		String originalAir = PropertiesConfigUtil.getConfigByKey("airOriginal");
+
+		System.out.println(originalAir);
 	}
 	
 }
