@@ -31,4 +31,9 @@ public class TaskController {
     public void backupTestXml(){
         fileService.backupTestXml();
     }
+
+//    @GetMapping(value = "deleteXml")
+//    public void deleteXml(){
+//        fileService.deleteXml();
+//    }
 }

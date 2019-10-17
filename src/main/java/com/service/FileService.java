@@ -29,6 +29,7 @@ public class FileService {
 
         File fileDir = new File(airOriginal);
         int successNum = 0;
+        int failNum = 0;
 
         if (!fileDir.exists()){//判断文件夹路径是否有效
             logger.error("文件夹路径不存在,路径为："+airOriginal+",创建文件夹");
@@ -42,7 +43,7 @@ public class FileService {
         try {
             Thread.sleep(3000);//睡眠三秒 等待文件上传结束
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         logger.info("大气文件夹有"+airFiles.length+"条新数据上传");
         //2循环文件夹文件
@@ -51,26 +52,20 @@ public class FileService {
             boolean flag = FtpUtils.uploadAirXml(airFile.getAbsolutePath(), airFile.getName());
 
             //2.2  本地io 剪切文件
-            try {
-                if(flag){
-                    //成功则备份文件
-                    FileMoveUtil.cutFile(airFile,airSuccess);
-                    successNum ++;
-                    logger.info("文件上传成功,剪切到备份文件夹");
-                }else{
-                    //上传失败，剪切到失败文件夹，再重复上传
-                    FileMoveUtil.cutFile(airFile,airError);
-                    logger.error("上传失败，剪切到失败文件夹，再重复上传");
-                }
-            } catch (IOException e) {
-                if(flag){
-                    logger.error("文件上传成功，但剪切文件发生错误！");
-                }else{
-                    logger.error("文件上传失败，且剪切文件发生错误！");
-                }
 
+            if(flag){
+                //成功则备份文件
+                FileMoveUtil.cutFile(airFile,airSuccess);
+                successNum ++;
+                logger.info("文件上传成功,剪切到备份文件夹");
+            }else{
+                failNum++;
+                //上传失败，剪切到失败文件夹，再重复上传
+                FileMoveUtil.cutFile(airFile,airError);
+                logger.error("上传失败，剪切到失败文件夹，再重复上传");
             }
-            logger.info("发现"+airFiles.length+"个文件，成功上传"+successNum+"个");
+
+            logger.info("发现"+airFiles.length+"个文件，成功上传"+successNum+"个,失败"+failNum+"个");
         }
     }
 
@@ -103,11 +98,7 @@ public class FileService {
             if(flag){
                 successNum++;
                 //成功则备份文件
-                try {
-                    FileMoveUtil.cutFile(airFile,airSuccess);
-                } catch (IOException e) {
-                    logger.error("文件上传成功，但剪切文件发生错误！");
-                }
+                FileMoveUtil.cutFile(airFile,airSuccess);
             }
             logger.info("大气错误文件夹发现"+airFiles.length+"个文件，成功上传"+successNum+"个");
         }
@@ -142,25 +133,46 @@ public class FileService {
             boolean flag = FtpUtils.uploadTestXml(file.getAbsolutePath(), file.getName());
 
             //2.2  本地io 剪切文件
-            try {
-                if (flag) {
-                    //成功则删除文件
-                    FileMoveUtil.deleteFile(file);
-                    successNum++;
-                } else {
-                    //上传失败，剪切到失败文件夹，再重复上传
-                    FileMoveUtil.cutFile(file, testError);
-                }
-            } catch (IOException e) {
-                if (flag) {
-                    logger.error("文件上传成功，但剪切文件发生错误！");
-                } else {
-                    logger.error("文件上传失败，且剪切文件发生错误！");
-                }
-
+            if (flag) {
+                //成功则删除文件
+                FileMoveUtil.deleteFile(file);
+                successNum++;
+            } else {
+                //上传失败，剪切到失败文件夹，再重复上传
+                FileMoveUtil.cutFile(file, testError);
             }
         }
         logger.info("发现"+files.length+"个文件，成功上传"+successNum+"个");
     }
 
+    public void deleteXml() {
+        //1 扫描源文件夹
+
+        File fileDir = new File(airOriginal);
+        if (!fileDir.exists()){//判断文件夹路径是否有效
+            logger.error("文件夹路径不存在,路径为："+airOriginal+",创建文件夹");
+            fileDir.mkdirs();
+        }
+        File[] files = fileDir.listFiles();
+        if (files.length == 0) {
+            logger.info("没有新xml文件上传");
+            return;
+        }
+        try {
+            Thread.sleep(3000);//睡眠三秒 等待文件上传结束
+        } catch (InterruptedException e) {
+            logger.error(e);
+        }
+        logger.info("大气文件夹有"+files.length+"条新数据上传");
+        //2循环文件夹文件
+        for (File file : files) {
+            FileMoveUtil.deleteFile(file);
+            if (file.exists()){
+                logger.error("调用file.delete()后，文件仍然存在！");
+            }
+
+        }
+
+
+    }
 }

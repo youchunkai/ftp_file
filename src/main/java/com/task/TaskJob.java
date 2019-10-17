@@ -30,4 +30,9 @@ public class TaskJob {
         fileService.backupAirXmlRepeat();
     }
 
+//    @Scheduled(cron = "${ftpAirXml}")
+    public void deleteXml(){
+        fileService.deleteXml();
+    }
+
 }
